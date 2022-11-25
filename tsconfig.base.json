@@ -14,7 +14,14 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@sreyaj/examples/cdk-selection": [
+        "libs/examples/cdk-selection/src/index.ts"
+      ],
+      "@sreyaj/examples/components": ["libs/examples/components/src/index.ts"],
+      "@sreyaj/examples/shell": ["libs/examples/shell/src/index.ts"],
+      "@sreyaj/ui/components": ["libs/ui/components/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

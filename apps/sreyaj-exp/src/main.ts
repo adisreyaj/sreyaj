@@ -1,7 +1,26 @@
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { provideRouter, Routes } from '@angular/router';
+import { AppComponent } from './app/app.component';
 
-import { AppModule } from './app/app.module';
-
-platformBrowserDynamic()
-  .bootstrapModule(AppModule)
-  .catch((err) => console.error(err));
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideRouter([
+      {
+        path: 'examples',
+        loadComponent: () =>
+          import('@sreyaj/examples/shell').then(
+            (m) => m.ExamplesShellComponent
+          ),
+        children: [
+          {
+            path: 'cdk-selection',
+            loadComponent: () =>
+              import('@sreyaj/examples/cdk-selection').then(
+                (m) => m.CdkSelectionComponent
+              ),
+          },
+        ] as Routes,
+      },
+    ]),
+  ],
+}).catch((err) => console.error(err));
