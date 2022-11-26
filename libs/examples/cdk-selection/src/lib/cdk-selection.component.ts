@@ -1,6 +1,6 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { DatePipe, DecimalPipe, NgForOf } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MOCK_TABLE_DATA, MockData } from './mock-data';
 
 @Component({
@@ -63,11 +63,17 @@ import { MOCK_TABLE_DATA, MockData } from './mock-data';
     </section>
   `,
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NgForOf, DatePipe, DecimalPipe],
 })
 export class CdkSelectionComponent {
-  readonly tableData = MOCK_TABLE_DATA;
-  readonly selectionModel = new SelectionModel<number>(true, []);
+  readonly tableData: MockData[];
+  readonly selectionModel: SelectionModel<number>;
+
+  constructor() {
+    this.tableData = MOCK_TABLE_DATA;
+    this.selectionModel = new SelectionModel<number>(true, []);
+  }
 
   get isAllSelected() {
     return this.selectionModel.selected.length === this.tableData.length;
@@ -78,7 +84,7 @@ export class CdkSelectionComponent {
     if (isChecked) {
       this.selectAll();
     } else {
-      this.deslectAll();
+      this.deselectAll();
     }
   }
 
@@ -88,7 +94,7 @@ export class CdkSelectionComponent {
 
   public toggleSelectAll() {
     if (this.isAllSelected) {
-      this.deslectAll();
+      this.deselectAll();
     } else {
       this.selectAll();
     }
@@ -98,7 +104,7 @@ export class CdkSelectionComponent {
     this.selectionModel.select(...this.tableData.map((row) => row.id));
   }
 
-  private deslectAll() {
+  private deselectAll() {
     this.selectionModel.clear();
   }
 }
