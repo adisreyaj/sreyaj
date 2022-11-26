@@ -75,11 +75,19 @@ export class CdkSelectionComponent {
     this.selectionModel = new SelectionModel<number>(true, []);
   }
 
-  get isAllSelected() {
+  /**
+   * Returns true if all rows are selected
+   */
+  get isAllSelected(): boolean {
     return this.selectionModel.selected.length === this.tableData.length;
   }
 
-  public onCheckAllChange(event: Event) {
+  /**
+   * Select all or deselect all based on the global
+   * checkbox state
+   * @param event - Checkbox change event
+   */
+  public onCheckAllChange(event: Event): void {
     const isChecked = (event.target as HTMLInputElement).checked;
     if (isChecked) {
       this.selectAll();
@@ -88,11 +96,16 @@ export class CdkSelectionComponent {
     }
   }
 
-  public onCheckRowChange(row: MockData) {
+  /**
+   * Use the toggle method to select or deselect a row
+   * based on its previous state
+   * @param row - selected row
+   */
+  public onCheckRowChange(row: MockData): void {
     this.selectionModel.toggle(row.id);
   }
 
-  public toggleSelectAll() {
+  public toggleSelectAll(): void {
     if (this.isAllSelected) {
       this.deselectAll();
     } else {
@@ -100,11 +113,11 @@ export class CdkSelectionComponent {
     }
   }
 
-  private selectAll() {
+  private selectAll(): void {
     this.selectionModel.select(...this.tableData.map((row) => row.id));
   }
 
-  private deselectAll() {
+  private deselectAll(): void {
     this.selectionModel.clear();
   }
 }
