@@ -7,7 +7,7 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { ColumnRenderersLookupService } from '../../services/column-renderers-lookup.service';
+import { ColumnRenderersRegistryService } from '../../services/column-renderers-registry.service';
 import { COLUMN_RENDERER_DATA } from '../../tokens/column-renderer.token';
 import { ListColumnConfig } from '../../types/list-column-config.type';
 
@@ -30,7 +30,9 @@ export class CardListColumnRendererComponent implements OnInit {
   @ViewChild('vcr', { read: ViewContainerRef, static: true })
   private readonly vcr!: ViewContainerRef;
 
-  private readonly rendererLookupService = inject(ColumnRenderersLookupService);
+  private readonly rendererLookupService = inject(
+    ColumnRenderersRegistryService
+  );
   private readonly parentInjector = inject(Injector);
 
   ngOnInit() {
