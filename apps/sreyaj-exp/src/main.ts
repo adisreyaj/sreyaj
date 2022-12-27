@@ -19,6 +19,13 @@ bootstrapApplication(AppComponent, {
                 (m) => m.CdkSelectionComponent
               ),
           },
+          {
+            path: 'dynamic-card-list',
+            loadComponent: () =>
+              import('@sreyaj/examples/dynamic-card-list').then(
+                (m) => m.DynamicCardListComponent
+              ),
+          },
         ] as Routes,
       },
     ]),
