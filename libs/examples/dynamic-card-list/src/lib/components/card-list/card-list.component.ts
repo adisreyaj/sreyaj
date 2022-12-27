@@ -12,7 +12,7 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ColumnRenderersLookupService } from '../../services/column-renderers-lookup.service';
+import { ColumnRenderersRegistryService } from '../../services/column-renderers-registry.service';
 import { COLUMN_RENDERERS } from '../../tokens/column-renderer.token';
 import {
   ExtendedListColumnConfig,
@@ -59,7 +59,9 @@ export class CardListComponent implements OnChanges {
   public gridTemplateColumns = '';
   @ViewChild('vcr', { read: ViewContainerRef })
   private readonly vcr?: ViewContainerRef;
-  private readonly rendererLookupService = inject(ColumnRenderersLookupService);
+  private readonly rendererLookupService = inject(
+    ColumnRenderersRegistryService
+  );
   private cdr = inject(ChangeDetectorRef);
 
   constructor(

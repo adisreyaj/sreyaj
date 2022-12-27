@@ -4,15 +4,15 @@ import { ListColumnRendererConstructor } from '../components/renderers/renderer.
 @Injectable({
   providedIn: 'root',
 })
-export class ColumnRenderersLookupService {
-  private readonly rendererMap = new Map<
+export class ColumnRenderersRegistryService {
+  private readonly renderersRegistry = new Map<
     string,
     ListColumnRendererConstructor
   >();
 
   registerRenderers(renderers: ListColumnRendererConstructor[]): void {
     renderers.forEach((renderer) => {
-      this.rendererMap.set(renderer.type, renderer);
+      this.renderersRegistry.set(renderer.type, renderer);
     });
   }
 
@@ -21,9 +21,9 @@ export class ColumnRenderersLookupService {
       throw new Error('Type is undefined');
     }
 
-    if (this.rendererMap.has(type)) {
+    if (this.renderersRegistry.has(type)) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      return this.rendererMap.get(type)!;
+      return this.renderersRegistry.get(type)!;
     } else {
       throw new Error(`Column renderer by the name '${type}' not found.`);
     }

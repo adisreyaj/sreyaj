@@ -4,7 +4,7 @@ import {
   TextColumnRendererComponent,
 } from '../components/renderers';
 import { ListColumnRendererConstructor } from '../components/renderers/renderer.decorator';
-import { ColumnRenderersLookupService } from '../services/column-renderers-lookup.service';
+import { ColumnRenderersRegistryService } from '../services/column-renderers-registry.service';
 import { COLUMN_RENDERERS } from '../tokens/column-renderer.token';
 
 export const registerDefaultRenderers = (): StaticProvider => {
@@ -18,6 +18,6 @@ export const registerDefaultRenderers = (): StaticProvider => {
 export const registerCustomRenderers = (
   renderers: ListColumnRendererConstructor[]
 ): void => {
-  const rendererLookupService = inject(ColumnRenderersLookupService);
+  const rendererLookupService = inject(ColumnRenderersRegistryService);
   rendererLookupService.registerRenderers(renderers);
 };
