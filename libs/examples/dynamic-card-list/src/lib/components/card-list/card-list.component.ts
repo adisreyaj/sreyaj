@@ -4,7 +4,6 @@ import {
   ChangeDetectorRef,
   Component,
   inject,
-  Inject,
   Input,
   OnChanges,
   SimpleChanges,
@@ -12,15 +11,12 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ColumnRenderersRegistryService } from '../../services/column-renderers-registry.service';
-import { COLUMN_RENDERERS } from '../../tokens/column-renderer.token';
 import {
   ExtendedListColumnConfig,
   ListColumnConfig,
 } from '../../types/list-column-config.type';
 import { DynamicListDataSource } from '../../utils/list-data-source';
 import { registerDefaultRenderers } from '../../utils/register-renderer.util';
-import { ListColumnRendererConstructor } from '../renderers/renderer.decorator';
 import { CardListColumnRendererComponent } from './card-list-column-renderer.component';
 
 @Component({
@@ -49,33 +45,30 @@ import { CardListColumnRendererComponent } from './card-list-column-renderer.com
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [NgForOf, CardListColumnRendererComponent, NgIf, AsyncPipe],
-  providers: [registerDefaultRenderers()],
 })
 export class CardListComponent implements OnChanges {
-  @Input()
-  dataSource?: DynamicListDataSource<Record<string, unknown>>;
-  public data$: Observable<readonly Record<string, unknown>[]> | undefined;
-  public columns: ExtendedListColumnConfig[] = [];
-  public gridTemplateColumns = '';
   @ViewChild('vcr', { read: ViewContainerRef })
   private readonly vcr?: ViewContainerRef;
-  private readonly rendererLookupService = inject(
-    ColumnRenderersRegistryService
-  );
-  private cdr = inject(ChangeDetectorRef);
 
-  constructor(
-    @Inject(COLUMN_RENDERERS)
-    private readonly renderers: ListColumnRendererConstructor[]
-  ) {
-    this.rendererLookupService.registerRenderers(this.renderers.flat());
-  }
+  @Input()
+  dataSource?: DynamicListDataSource<Record<string, unknown>>;
 
   @Input()
   set columnConfig(columnConfig: ListColumnConfig[]) {
     this.columns = columnConfig;
     this.gridTemplateColumns = this.getGridColumnTemplate(columnConfig);
     this.cdr.markForCheck();
+  }
+
+  public data$: Observable<readonly Record<string, unknown>[]> | undefined;
+
+  public columns: ExtendedListColumnConfig[] = [];
+  public gridTemplateColumns = '';
+
+  private cdr = inject(ChangeDetectorRef);
+
+  constructor() {
+    registerDefaultRenderers();
   }
 
   ngOnChanges(changes: SimpleChanges) {
