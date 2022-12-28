@@ -15,8 +15,4 @@ import { ListColumnRenderer } from '../renderer.decorator';
 @ListColumnRenderer({
   type: CoreListColumnRendererType.Text,
 })
-export class TextColumnRendererComponent extends ListColumnRendererBase {
-  constructor() {
-    super();
-  }
-}
+export class TextColumnRendererComponent extends ListColumnRendererBase {}
