@@ -58,6 +58,114 @@ mapping. We expose two methods:
 - `registerRenderers` to register renderers
 - `lookup` to lookup a renderer by type
 
+### Main Component
+
+There is a main component `sreyaj-exp-card-list` which is the component the consumers will use. The component takes in
+two inputs:
+
+1. `columnConfig` - An array of column config that is used to render each column
+2. `dataSource` - The data source which drives the component
+
 ## Implementation
 
-## Usage
+The column config is what drives the view part of the component. Here is how you define it:
+
+```ts
+[{
+    id: 'name',
+    display: CustomRenderers.NameWithAvatar,
+    width: 2,
+}, {
+    id: 'email',
+    display: CoreListColumnRendererType.Text,
+    width: 4,
+}]
+```
+
+The `id` is what connects the view and the data. The datasource should contain an object with the keys mentioned as `id`
+in the column config.
+
+The `display` is the type of the renderer. It can be a core renderer or a custom renderer. This key will be used to
+look up the corresponding renderer to be
+used for that particular column.
+
+### Registering Renderers
+
+There are methods exposed to register default renderers and for custom renderers. The default renderers are registered
+in the constructor of the `sreyaj-exp-card-list`.
+
+```ts
+export const registerDefaultRenderers = (): void => {
+    registerCustomRenderers([
+        TextColumnRendererComponent,
+        BadgeColumnRendererComponent,
+    ]);
+};
+
+export const registerCustomRenderers = (
+    renderers: ListColumnRendererConstructor[]
+): void => {
+    const rendererLookupService = inject(ColumnRenderersRegistryService);
+    rendererLookupService.registerRenderers(renderers);
+};
+```
+
+We inject the `ColumnRenderersRegistryService` and use it to register the renderers.
+
+### Attaching Renderers to the View
+
+This magic happens in the `sreyaj-exp-card-list-column-renderer` component. This is how we do it:
+
+```ts
+if (!this.columnConfig || !this.data) {
+    return;
+}
+// Get the corresponding renderer for the display type
+const renderer = this.rendererLookupService.lookup(
+    this.columnConfig?.display
+);
+if (renderer) {
+// Dynamically create the component and pass the data with the help of Injection Token
+    this.vcr.createComponent(renderer, {
+        injector: Injector.create({
+            providers: [
+                {
+                    provide: COLUMN_RENDERER_DATA,
+                    useValue: this.data[this.columnConfig.id],
+                },
+            ],
+            parent: this.parentInjector,
+        }),
+    });
+}
+```
+
+### Inside a Renderer
+
+Let's look at the `sreyaj-exp-card-list-text-renderer` component. This is how we get the data:
+
+```ts
+export abstract class ListColumnRendererBase<ColumnDataType = unknown> {
+    public static readonly type: CoreListColumnRendererType;
+    // Get the passed data by referring to the Injection Token
+    public readonly data: ColumnDataType =
+        inject<ColumnDataType>(COLUMN_RENDERER_DATA);
+}
+
+@Component({
+    selector: 'sreyaj-exp-text-column-renderer',
+    template: `
+    <div>
+      {{ data }} <!-- Use the data here -->
+    </div>
+  `,
+    standalone: true,
+})
+@ListColumnRenderer({
+    type: CoreListColumnRendererType.Text,
+})
+export class TextColumnRendererComponent extends ListColumnRendererBase {
+}
+
+```
+
